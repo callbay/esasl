@@ -445,7 +445,7 @@ nonce() ->
 
 salted_password(Alg, Password, Salt, IterationCount) ->
     {ok, Bin} = pbkdf2:pbkdf2({hmac, Alg}, Password, Salt, IterationCount),
-    pbkdf2:to_hex(Bin).
+    Bin.
 
 client_key(Alg, SaltedPassword) ->
     hmac(Alg, SaltedPassword, <<"Client Key">>).
