@@ -94,8 +94,8 @@ check_client_final_message(ClientFinalmessage, #{client_first_message_bare := Cl
                proof := ClientProof,
                gs2_cbind_flag := GS2CBindFlag}} ->
             ClientFinalMessageWithoutProof = peek_client_final_message_without_proof(ClientFinalmessage),
-            AuthMessage = iolist_to_binary([ ClientFirstMessageBare
-                                           , ServerFirstMessage
+            AuthMessage = iolist_to_binary([ ClientFirstMessageBare, ","
+                                           , ServerFirstMessage, ","
                                            , ClientFinalMessageWithoutProof]),
             ClientSignature = hmac(Algorithm, StoredKey, AuthMessage),
             ClientKey = crypto:exor(ClientProof, ClientSignature),
@@ -122,8 +122,8 @@ check_server_first_message(ServerFirstMessage, #{client_first_message := ClientF
                iteration_count := IterationCount}} ->
             ClientFirstMessageBare = peek_client_first_message_bare(ClientFirstMessage),
             ClientFinalMessageWithoutProof = client_final_message_without_proof(Nonce),
-            AuthMessage = iolist_to_binary([ ClientFirstMessageBare
-                                           , ServerFirstMessage
+            AuthMessage = iolist_to_binary([ ClientFirstMessageBare, ","
+                                           , ServerFirstMessage, ","
                                            , ClientFinalMessageWithoutProof]),
             SaltedPassword = salted_password(Algorithm, Password, Salt, IterationCount),
             ClientKey = client_key(Algorithm, SaltedPassword),
@@ -150,8 +150,8 @@ check_server_final_message(ServerFinalMessage,
                    salt := Salt,
                    iteration_count := IterationCount}} = parse_server_first_message(ServerFirstMessage),
             ClientFinalMessageWithoutProof = client_final_message_without_proof(Nonce),
-            AuthMessage = iolist_to_binary([ ClientFirstMessageBare
-                                           , ServerFirstMessage
+            AuthMessage = iolist_to_binary([ ClientFirstMessageBare, ","
+                                           , ServerFirstMessage, ","
                                            , ClientFinalMessageWithoutProof]),
             SaltedPassword = salted_password(Algorithm, Password, Salt, IterationCount),
             ServerKey = server_key(Algorithm, SaltedPassword),
